@@ -5,7 +5,10 @@ import userRouter from "./routes/userRoutes.js";
 import borrowRecordRouter from "./routes/borrowRecordRoutes.js";
 import express, { type Request, type Response } from "express";
 
+import dotenv from "dotenv";
+
 const app = express();
+dotenv.config();
 
 // 中间件
 app.use(cors());
@@ -16,7 +19,10 @@ app.use("/api/books", bookRouter);
 app.use("/api/user", userRouter);
 app.use("/api/borrow-record", borrowRecordRouter);
 
+app.get("/", (req, res) => res.json({ designer: "Jianzhong Ding" }));
+
 app.get("/api/test", (req: Request, res: Response) => {
+  console.log(process.env.PORT);
   res.json([
     { id: 1, title: "圣经", author: "Unknown" },
     { id: 2, title: "Systematic Theology", author: "Wayne Grudem" },

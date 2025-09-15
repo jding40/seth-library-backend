@@ -14,9 +14,9 @@ export const authenticate = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({ message: "No token provided" });
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "SenecaDiscipleChurch");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         //console.log("decoded in authenticate: "+decoded);
-        if (!decoded || typeof decoded.id !== 'string') {
+        if (!decoded || typeof decoded.id !== "string") {
             return res.status(401).json({ message: "Invalid token format" });
         }
         // 查询用户
