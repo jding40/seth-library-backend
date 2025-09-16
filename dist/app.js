@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api/books", bookRouter);
 app.use("/api/user", userRouter);
 app.use("/api/borrow-record", borrowRecordRouter);
+app.get("/", (req, res) => res.json({ designer: "Jianzhong Ding" }));
 app.get("/api/test", (req, res) => {
     console.log(process.env.PORT);
     res.json([

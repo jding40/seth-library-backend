@@ -11,6 +11,17 @@ export const getBooks = async (req, res) => {
         res.status(500).json({ message: "Failed to get books", error });
     }
 };
+//get book by isbn
+export const getBookByIsbn = async (req, res) => {
+    try {
+        const { isbn } = req.params;
+        const book = await Book.findOne({ ISBN: isbn });
+        res.status(201).json(book);
+    }
+    catch (error) {
+        res.status(400).json({ message: "Failed to add the book", error });
+    }
+};
 // add a new book
 export const createBook = async (req, res) => {
     try {

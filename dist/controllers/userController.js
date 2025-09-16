@@ -29,16 +29,19 @@ export const registerUser = async (req, res) => {
 // 用户登录
 export const loginUser = async (req, res) => {
     try {
+        console.log("loginUser in userController.ts");
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         console.log("user:" + user);
         if (!user)
             return res.status(400).json({ message: "User not found..." });
         const isMatch = await bcrypt.compare(password, user.password);
+        console.log("isMatch:" + isMatch);
         if (!isMatch)
             return res.status(400).json({ message: "Incorrect password..." });
-        //const secret = process.env.JWT_SECRET || "default_secret";
-        const secret = "SenecaDiscipleChurch";
+        const secret = process.env.JWT_SECRET;
+        if (!secret)
+            throw new Error("secret is null");
         const token = jwt.sign({ id: user._id, role: user.role, email: user.email }, secret, { expiresIn: "168h" });
         res.json({ message: "Successfully login", token });
     }
@@ -67,11 +70,11 @@ export const updateUser = async (req, res) => {
         }
         const user = await User.findByIdAndUpdate(id, updates, { new: true });
         if (!user)
-            return res.status(404).json({ message: "用户未找到" });
+            return res.status(404).json({ message: "User not found..." });
         res.json(user);
     }
     catch (error) {
-        res.status(500).json({ message: "更新失败", error });
+        res.status(500).json({ message: "Update failed", error });
     }
 };
 // 删除用户（需要鉴权）
@@ -80,11 +83,11 @@ export const deleteUser = async (req, res) => {
         const { id } = req.params;
         const user = await User.findByIdAndDelete(id);
         if (!user)
-            return res.status(404).json({ message: "用户未找到" });
-        res.json({ message: "删除成功" });
+            return res.status(404).json({ message: "User not found..." });
+        res.json({ message: "Deletion failed..." });
     }
     catch (error) {
-        res.status(500).json({ message: "删除失败", error });
+        res.status(500).json({ message: "Deletion failed...", error });
     }
 };
 //# sourceMappingURL=userController.js.map

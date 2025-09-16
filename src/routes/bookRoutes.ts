@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getBooks,
+  getBookByIsbn,
   createBook,
   updateBook,
   deleteBook,
@@ -11,6 +12,7 @@ import {authenticate, authorize} from "../middlewares/authMiddleware.js";
 const bookRouter:Router = Router();
 
 bookRouter.get("/", getBooks);
+bookRouter.get("/:isbn", getBookByIsbn);
 bookRouter.post("/", authenticate, authorize(["admin"]), createBook);
 bookRouter.put("/", authenticate, authorize(["admin"]), updateBook);
 bookRouter.delete("/:isbn",authenticate, authorize(["admin"]),deleteBook);

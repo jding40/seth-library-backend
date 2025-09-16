@@ -11,7 +11,7 @@ userRouter.post("/login", loginUser); // sign in
 // 🔒 需要 admin 权限
 userRouter.get("/", authenticate, authorize(["admin"]), getAllUsers);
 //userRouter.get("/:id", authenticate, authorize(["admin"]), getAllUsers);
-userRouter.delete("/:id", authenticate, authorize(["admin"]), deleteUser);
-userRouter.put("/:id", authenticate, authorize(["admin"]), updateUser);
+userRouter.delete("/:isbn", authenticate, authorize(["admin"]), deleteUser);
+userRouter.put("/:isbn", authenticate, authorize(["admin"]), updateUser);
 export default userRouter;
 //# sourceMappingURL=userRoutes.js.map

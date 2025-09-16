@@ -1,1 +1,1 @@
-{"version":3,"file":"bookRoutes.d.ts","sourceRoot":"","sources":["../../src/routes/bookRoutes.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAUjC,QAAA,MAAM,UAAU,EAAC,MAAiB,CAAC;AAOnC,eAAe,UAAU,CAAC"}
+{"version":3,"file":"bookRoutes.d.ts","sourceRoot":"","sources":["../../src/routes/bookRoutes.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAWjC,QAAA,MAAM,UAAU,EAAC,MAAiB,CAAC;AAQnC,eAAe,UAAU,CAAC"}

@@ -14,6 +14,19 @@ export const getBooks= async (req: Request, res: Response) => {
   }
 };
 
+//get book by isbn
+
+export const getBookByIsbn = async(req: Request, res: Response) => {
+
+  try{
+    const { isbn } = req.params;
+    const book:IBook|null  = await Book.findOne({ISBN:isbn});
+    res.status(201).json(book);
+  }catch (error) {
+    res.status(400).json({ message: "Failed to add the book", error });
+  }
+}
+
 // add a new book
 export const createBook = async (req: Request, res: Response) => {
   try {
