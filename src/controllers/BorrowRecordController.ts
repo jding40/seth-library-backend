@@ -5,7 +5,7 @@ import type { Request, Response } from 'express';
 
 
 class BorrowRecordController {
-    // 获取所有借阅记录
+    // get all borrow records
     static async getAll(req: Request, res: Response) {
         try {
             const records = await BorrowRecord.find();
@@ -15,7 +15,7 @@ class BorrowRecordController {
         }
     }
 
-    // 获取单个借阅记录
+    // get one borrow record
     static async getById(req: Request, res: Response) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
@@ -26,12 +26,12 @@ class BorrowRecordController {
         }
     }
 
-    // 创建借阅记录
+    // create a new borrow record
     static async create(req: Request, res: Response) {
         try {
             const { ISBN, qty, borrowerName, borrowDate, notes } = req.body;
 
-            // 查找对应的书本
+            // query related book
             const book = await Book.findOne({ ISBN });
             if (!book) return res.status(404).json({ message: "Book not found" });
 
@@ -42,11 +42,11 @@ class BorrowRecordController {
                 return res.status(400).json({ message: `Only ${availableQty} left in stock` });
             }
 
-            // 调整借出数量
+            // adjust borrowed books count
             book.borrowedBooksCount += qty;
             await book.save();
 
-            // 保存借阅记录
+            // save borrow record
             const record = new BorrowRecord({ ISBN, qty, borrowerName, borrowDate, notes });
             await record.save();
 
@@ -57,7 +57,7 @@ class BorrowRecordController {
     }
 
 
-    // 更新借阅记录
+    // update borrow record
     static async update(req: Request, res: Response) {
         try {
             const originalRecord:IBorrowRecord |null = await BorrowRecord.findById(req.params.id);
@@ -85,7 +85,7 @@ class BorrowRecordController {
                 // book.qtyOwned += (originalRecord.qty - qty);
                 book.borrowedBooksCount -= (originalRecord.qty - qty);
             }
-            //正常return
+            //normal return
             await book.save();
             //update BorrowRecord
             await BorrowRecord.findByIdAndUpdate(req.params.id, req.body);
@@ -97,13 +97,13 @@ class BorrowRecordController {
         }
     }
 
-    // 删除借阅记录 & 恢复库存
+    // delete borrow record & Restore stock quantity
     static async delete(req: Request, res: Response) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record) return res.status(404).json({ message: "Record not found" });
 
-            // 恢复库存
+            // Restore stock quantity
 
             const book:IBook | null = await Book.findOne({ ISBN: record.ISBN });
             if (!book) return res.status(404).json({ message: "Book not found" });

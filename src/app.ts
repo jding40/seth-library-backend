@@ -14,7 +14,7 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-// 路由
+// routers
 app.use("/api/books", bookRouter);
 app.use("/api/user", userRouter);
 app.use("/api/borrow-record", borrowRecordRouter);
@@ -24,15 +24,14 @@ app.get("/", (req, res) => res.json({ designer: "Jianzhong Ding" }));
 app.get("/api/test", (req: Request, res: Response) => {
   console.log(process.env.PORT);
   res.json([
-    { id: 1, title: "圣经", author: "Unknown" },
+    { id: 1, title: "Bible", author: "Unknown" },
     { id: 2, title: "Systematic Theology", author: "Wayne Grudem" },
     { id: 3, title: "The Pilgrim’s Progress", author: "John Bunyan" },
   ]);
 });
 
-// MongoDB 连接
-mongoose
-  .connect(
+// MongoDB connection
+mongoose.connect(
     "mongodb+srv://jding40:ZwSBamPyxCqmcuon@senecaweb.legcyit.mongodb.net?retryWrites=true&w=majority&appName=SenecaWeb",
     { dbName: "sethLibrary" }
   )

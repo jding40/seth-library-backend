@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User, {} from "../models/User.js";
-// 验证 JWT
+// validate JWT
 export const authenticate = async (req, res, next) => {
     //console.log("authenticate====>");
     try {
@@ -19,7 +19,8 @@ export const authenticate = async (req, res, next) => {
         if (!decoded || typeof decoded.id !== "string") {
             return res.status(401).json({ message: "Invalid token format" });
         }
-        // 查询用户
+        console.log("decoded in authenticate: " + decoded);
+        // query user by id
         const user = await User.findById(decoded.id);
         if (!user) {
             return res.status(401).json({ message: "Invalid token user" });
@@ -31,7 +32,7 @@ export const authenticate = async (req, res, next) => {
         return res.status(401).json({ message: "Invalid or expired token" });
     }
 };
-// 检查角色
+// validate user's authorization
 export const authorize = (roles) => (req, res, next) => {
     if (!req.user) {
         return res.status(401).json({ message: "Unauthorized" });

@@ -3,10 +3,10 @@ import express from "express";
 import BorrowRecordController from "../controllers/BorrowRecordController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 const borrowRecordRouter = express.Router();
-// 📖 查询（公开接口）
+// 📖 query(public interface)
 borrowRecordRouter.get("/", authenticate, authorize(["admin"]), BorrowRecordController.getAll);
 borrowRecordRouter.get("/:id", authenticate, authorize(["admin"]), BorrowRecordController.getById);
-// 🔒 管理（必须登录 + admin）
+// 🔒 management(user role must be admin)
 borrowRecordRouter.post("/", authenticate, authorize(["admin"]), BorrowRecordController.create);
 borrowRecordRouter.put("/:id", authenticate, authorize(["admin"]), BorrowRecordController.update);
 borrowRecordRouter.delete("/:id", authenticate, authorize(["admin"]), BorrowRecordController.delete);

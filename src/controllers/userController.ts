@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { type AuthRequest } from "../middlewares/authMiddleware.js";
 import { type IUser } from "../models/User.js";
 
-// 注册用户
+// User sign up
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { email, password, role, firstName, lastName, tel } = req.body;
@@ -19,7 +19,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const newUser = new User({
       email,
       password: hashedPassword,
-      role: "guest",
+      role: "user",
       firstName,
       lastName,
       tel,
@@ -32,7 +32,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// 用户登录
+// User login
 export const loginUser = async (req: Request, res: Response) => {
   try {
     console.log("loginUser in userController.ts");
@@ -63,7 +63,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-// 获取所有用户（需要鉴权）
+// Get information of all users(need authorization)
 export const getAllUsers = async (req: AuthRequest, res: Response) => {
   try {
     const users = await User.find().select("-password");
@@ -73,7 +73,7 @@ export const getAllUsers = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// 更新用户（需要鉴权）
+// Update user(need authorization)
 export const updateUser = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -93,7 +93,7 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// 删除用户（需要鉴权）
+// delete user(need authorization)
 export const deleteUser = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;

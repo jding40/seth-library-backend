@@ -33,7 +33,7 @@ api/dist/
 .DS_Store
 Thumbs.db
 
-# Env files (不要把密钥上传到 GitHub)
+# Env files
 .env
 .env.local
 .env.*.local

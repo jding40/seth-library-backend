@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import User, { type IUser } from "../models/User.js";
 
 export interface AuthRequest extends Request {
-  user?: IUser; // 把当前登录用户挂载到 req
+  user?: IUser; // Mount the currently logged-in user to req
 }
 
-// 验证 JWT
+// validate JWT
 export const authenticate = async (
   req: AuthRequest,
   res: Response,
@@ -30,12 +30,14 @@ export const authenticate = async (
       token,
       process.env.JWT_SECRET as string
     ) as jwt.JwtPayload;
+
     //console.log("decoded in authenticate: "+decoded);
     if (!decoded || typeof decoded.id !== "string") {
       return res.status(401).json({ message: "Invalid token format" });
     }
+    console.log("decoded in authenticate: "+decoded);
 
-    // 查询用户
+    // query user by id
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ message: "Invalid token user" });
@@ -48,7 +50,7 @@ export const authenticate = async (
   }
 };
 
-// 检查角色
+// validate user's authorization
 export const authorize =
   (roles: string[]) =>
   (req: AuthRequest, res: Response, next: NextFunction) => {

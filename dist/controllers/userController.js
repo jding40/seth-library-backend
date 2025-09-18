@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {} from "../middlewares/authMiddleware.js";
 import {} from "../models/User.js";
-// 注册用户
+// User sign up
 export const registerUser = async (req, res) => {
     try {
         const { email, password, role, firstName, lastName, tel } = req.body;
@@ -14,7 +14,7 @@ export const registerUser = async (req, res) => {
         const newUser = new User({
             email,
             password: hashedPassword,
-            role: "guest",
+            role: "user",
             firstName,
             lastName,
             tel,
@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ message: "Registration failed...", error });
     }
 };
-// 用户登录
+// User login
 export const loginUser = async (req, res) => {
     try {
         console.log("loginUser in userController.ts");
@@ -49,7 +49,7 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: "Failed to login...", error });
     }
 };
-// 获取所有用户（需要鉴权）
+// Get information of all users(need authorization)
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find().select("-password");
@@ -59,7 +59,7 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ message: "Failed to get user", error });
     }
 };
-// 更新用户（需要鉴权）
+// Update user(need authorization)
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -77,7 +77,7 @@ export const updateUser = async (req, res) => {
         res.status(500).json({ message: "Update failed", error });
     }
 };
-// 删除用户（需要鉴权）
+// delete user(need authorization)
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;

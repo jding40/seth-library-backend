@@ -1,17 +1,17 @@
 import Book from "../models/Book.js";
-// 获取所有图书
+// get information of all users
 export const getBooks = async (req, res) => {
     console.log("getBooks in bookController.ts:");
     try {
         const books = await Book.find();
-        console.log("bookController.getBooks => books:" + books);
+        // console.log("bookController.getBooks => books:"+books);
         res.json(books);
     }
     catch (error) {
         res.status(500).json({ message: "Failed to get books", error });
     }
 };
-//get book by isbn
+//get the designated book by isbn
 export const getBookByIsbn = async (req, res) => {
     try {
         const { isbn } = req.params;
@@ -27,6 +27,7 @@ export const createBook = async (req, res) => {
     try {
         const book = new Book(req.body);
         console.log("bookController.createBook.book:", book);
+        //TODO only allow designated fields
         await book.save();
         res.status(201).json(book);
     }
@@ -39,7 +40,8 @@ export const updateBook = async (req, res) => {
     try {
         const { ISBN } = req.body;
         console.log(req.body);
-        const book = await Book.findOneAndUpdate({ ISBN: ISBN }, // 使用 ISBN 查找
+        //TODO only allow designated fields
+        const book = await Book.findOneAndUpdate({ ISBN: ISBN }, // query via ISBN
         req.body, { new: true });
         if (!book)
             return res.status(404).json({ message: "Book not found" });
