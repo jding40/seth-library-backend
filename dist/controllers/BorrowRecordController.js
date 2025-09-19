@@ -25,6 +25,7 @@ class BorrowRecordController {
     }
     // create a new borrow record
     static async create(req, res) {
+        console.log("create borrow record");
         try {
             const { ISBN, qty, borrowerName, borrowDate, notes } = req.body;
             // query related book
