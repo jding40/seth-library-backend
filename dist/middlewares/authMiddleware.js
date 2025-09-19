@@ -38,6 +38,7 @@ export const authorize = (roles) => (req, res, next) => {
         return res.status(401).json({ message: "Unauthorized" });
     }
     if (!roles.includes(req.user.role)) {
+        console.log("authMiddleware.authorize: ", req.user.role, roles);
         return res.status(403).json({ message: "Forbidden: insufficient role" });
     }
     next();

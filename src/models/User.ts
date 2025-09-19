@@ -10,9 +10,6 @@ export interface IUser extends Document {
   [key: string]: any;
 }
 
-
-
-
 const userSchema = new Schema<IUser>(
     {
         email: { type: String, required: true, unique: true },

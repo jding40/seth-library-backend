@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 const app = express();
 dotenv.config();
 
-// 中间件
+// middleware
 app.use(cors());
 app.use(express.json());
 
