@@ -24,7 +24,7 @@ app.get("/api/test", (req, res) => {
     ]);
 });
 // MongoDB connection
-mongoose.connect("mongodb+srv://jding40:ZwSBamPyxCqmcuon@senecaweb.legcyit.mongodb.net?retryWrites=true&w=majority&appName=SenecaWeb", { dbName: "sethLibrary" })
+mongoose.connect(process.env.MONGODB_URI, { dbName: "sethLibrary" })
     .then(() => console.log("✅ MongoDB connected"))
     .catch((err) => console.error("❌ MongoDB connection error:", err));
 export default app;

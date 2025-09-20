@@ -32,8 +32,8 @@ app.get("/api/test", (req: Request, res: Response) => {
 
 // MongoDB connection
 mongoose.connect(
-    "mongodb+srv://jding40:ZwSBamPyxCqmcuon@senecaweb.legcyit.mongodb.net?retryWrites=true&w=majority&appName=SenecaWeb",
-    { dbName: "sethLibrary" }
+    process.env.MONGODB_URI as string,
+    { dbName: process.env.DB_DATABASE as string }
   )
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
