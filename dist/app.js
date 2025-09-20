@@ -24,7 +24,7 @@ app.get("/api/test", (req, res) => {
     ]);
 });
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { dbName: "sethLibrary" })
+mongoose.connect(process.env.MONGODB_URI, { dbName: process.env.DB_DATABASE })
     .then(() => console.log("✅ MongoDB connected"))
     .catch((err) => console.error("❌ MongoDB connection error:", err));
 export default app;
