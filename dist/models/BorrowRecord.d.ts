@@ -1,7 +1,8 @@
 import { Document, Model } from "mongoose";
 export interface IBorrowRecord extends Document {
     ISBN: string;
-    qty: number;
+    totalQty: number;
+    outstandingQty: number;
     borrowerName: string;
     borrowDate: Date;
     isReturned?: boolean;
