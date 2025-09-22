@@ -55,7 +55,9 @@ export const updateBook = async (req, res) => {
 export const deleteBook = async (req, res) => {
     try {
         const { isbn } = req.params;
+        console.log("isbn:" + isbn);
         const book = await Book.findOneAndDelete({ ISBN: isbn });
+        console.log("bookController.deleteBook.book:", book);
         if (!book)
             return res.status(404).json({ message: "Book not found" });
         res.json({ message: "Delete successfully" });

@@ -66,8 +66,12 @@ export const updateBook = async (req: Request, res: Response) => {
 export const deleteBook = async (req: Request, res: Response) => {
   try {
     const { isbn } = req.params;
-    const book = await Book.findOneAndDelete( { ISBN: isbn },);
+    if (!isbn) return res.status(400).json({ message: "ISBN is required" });
+    const book = await Book.findOne({ ISBN: isbn });
     if (!book) return res.status(404).json({ message: "Book not found" });
+    if(book.borrowedBooksCount!==0) return res.status(400).json({ message: "Book has borrowed records" });
+    await book.deleteOne();
+     //await Book.findOneAndDelete( { ISBN: isbn },);
     res.json({ message: "Delete successfully" });
   } catch (error) {
     res.status(500).json({ message: "Deletion failed", error });

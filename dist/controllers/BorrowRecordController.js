@@ -156,22 +156,19 @@ class BorrowRecordController {
             res.status(400).json({ message: "Failed to update record" });
         }
     }
-    // delete borrow record & Restore stock quantity
+    // delete borrow record
     static async delete(req, res) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record)
                 return res.status(404).json({ message: "Record not found" });
             // Restore stock quantity
-            const book = await Book.findOne({ ISBN: record.ISBN });
-            if (!book)
-                return res.status(404).json({ message: "Book not found" });
+            // const book:IBook | null = await Book.findOne({ ISBN: record.ISBN });
+            // if (!book) return res.status(404).json({ message: "Book not found" });
             if (!record.isReturned && !record.isBadDebt) {
-                book.qtyOwned -= record.outstandingQty;
-                book.borrowedBooksCount -= record.outstandingQty;
-                await book.save();
+                return res.status(400).json({ message: "Cannot delete a unreturned record" });
             }
-            await record.deleteOne();
+            await BorrowRecord.deleteOne({ _id: req.params.id });
             res.json({ message: "Record deleted..." });
         }
         catch (err) {
