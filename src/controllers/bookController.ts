@@ -4,7 +4,7 @@ import type { IBook } from "../models/Book.js";
 
 // get information of all users
 export const getBooks= async (req: Request, res: Response) => {
-  console.log("getBooks in bookController.ts:");
+  console.log("getBooks again in bookController.ts:");
   try {
     const books:IBook[]  = await Book.find();
     console.log("bookController.getBooks => books:"+books);

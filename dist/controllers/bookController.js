@@ -1,13 +1,14 @@
 import Book from "../models/Book.js";
 // get information of all users
 export const getBooks = async (req, res) => {
-    console.log("getBooks in bookController.ts:");
+    console.log("getBooks again in bookController.ts:");
     try {
         const books = await Book.find();
-        // console.log("bookController.getBooks => books:"+books);
+        console.log("bookController.getBooks => books:" + books);
         res.json(books);
     }
     catch (error) {
+        console.log("error in bookController.getBooks: " + error);
         res.status(500).json({ message: "Failed to get books", error });
     }
 };
