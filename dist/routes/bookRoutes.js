@@ -4,8 +4,8 @@ import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 const bookRouter = Router();
 bookRouter.get("/", getBooks);
 bookRouter.get("/:isbn", getBookByIsbn);
-bookRouter.post("/", authenticate, authorize(["admin"]), createBook);
-bookRouter.put("/", authenticate, authorize(["admin"]), updateBook);
-bookRouter.delete("/:isbn", authenticate, authorize(["admin"]), deleteBook);
+bookRouter.post("/", authenticate, authorize(["admin", "owner"]), createBook);
+bookRouter.put("/", authenticate, authorize(["admin", "owner"]), updateBook);
+bookRouter.delete("/:isbn", authenticate, authorize(["admin", "owner"]), deleteBook);
 export default bookRouter;
 //# sourceMappingURL=bookRoutes.js.map

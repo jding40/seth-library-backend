@@ -9,7 +9,7 @@ export const registerUser = async (req, res) => {
         const { email, password, role, firstName, lastName, tel } = req.body;
         const existingUser = await User.findOne({ email });
         if (existingUser)
-            return res.status(400).json({ message: "User already exists..." });
+            return res.status(400).json({ message: "This email address has already been registered..." });
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             email,
@@ -88,6 +88,28 @@ export const deleteUser = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: "Deletion failed...", error });
+    }
+};
+export const switchRole = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("switchRole in userController.ts=> id:" + id);
+        // query
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found..." });
+        }
+        // switch
+        const newRole = user.role === "admin" ? "user" : "admin";
+        user.role = newRole;
+        console.log("new role: ", newRole);
+        // save
+        await user.save();
+        res.json({ message: "Role switched successfully", user });
+    }
+    catch (error) {
+        console.error("❌ switchRole failed:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 //# sourceMappingURL=userController.js.map
