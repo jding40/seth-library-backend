@@ -7,9 +7,10 @@ export const getBooks= async (req: Request, res: Response) => {
   console.log("getBooks in bookController.ts:");
   try {
     const books:IBook[]  = await Book.find();
-    // console.log("bookController.getBooks => books:"+books);
+    console.log("bookController.getBooks => books:"+books);
     res.json(books);
   } catch (error) {
+    console.log("error in bookController.getBooks: "+error);
     res.status(500).json({ message: "Failed to get books", error });
   }
 };
