@@ -51,12 +51,19 @@ export const updateBook = async (req: Request, res: Response) => {
 
     //TODO only allow designated fields
 
-    const book = await Book.findOneAndUpdate(
+    let book = await Book.findOneAndUpdate(
       { ISBN: ISBN },  // query via ISBN
       req.body,
       { new: true }
     );
     if (!book) return res.status(404).json({ message: "Book not found" });
+    if(req.body?.qtyOwned>0 && ! book.isWishList) {book = await Book.findOneAndUpdate(
+        {ISBN: ISBN},
+        {isWishList: false},
+        {new: true}
+      )
+    }
+
     return res.json(book);
   } catch (error) {
     return res.status(400).json({ message: "Update failed", error });
