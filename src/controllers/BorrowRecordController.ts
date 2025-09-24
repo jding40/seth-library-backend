@@ -9,9 +9,9 @@ class BorrowRecordController {
     static async getAll(req: Request, res: Response) {
         try {
             const records = await BorrowRecord.find();
-            res.json(records);
+            return res.json(records);
         } catch (err) {
-            res.status(500).json({ message: "Failed to fetch borrow records" });
+            return res.status(500).json({ message: "Internal server error in BorrowRecordController.getAll" });
         }
     }
 
@@ -20,9 +20,9 @@ class BorrowRecordController {
         try {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record) return res.status(404).json({ message: "Record not found" });
-            res.json(record);
+            return res.json(record);
         } catch (err) {
-            res.status(500).json({ message: "Failed to fetch record" });
+            return res.status(500).json({ message: "Internal server error in BorrowRecordController.getById" });
         }
     }
 
@@ -37,7 +37,7 @@ class BorrowRecordController {
             const book = await Book.findOne({ ISBN });
             if (!book) return res.status(404).json({ message: "Book not found" });
 
-            console.log("book.borrowedBooksCount: "+book.borrowedBooksCount);
+            // console.log("book.borrowedBooksCount: "+book.borrowedBooksCount);
 
             const availableQty = book.qtyOwned - book.borrowedBooksCount;
             if (availableQty < totalQty) {
@@ -55,9 +55,9 @@ class BorrowRecordController {
             const record = new BorrowRecord({ ISBN, totalQty,outstandingQty, borrowerName, borrowDate, notes });
             await record.save();
 
-            res.status(201).json(record);
+            return res.status(201).json(record);
         } catch (err) {
-            res.status(400).json({ message: (err as any).message });
+            return res.status(400).json({ message: "Internal server error in BorrowRecordController.create" });
         }
     }
 
@@ -66,6 +66,7 @@ class BorrowRecordController {
         try {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record) return res.status(404).json({ message: "Record not found" });
+            if (record.isReturned) return res.status(404).json({ message: "You can't toggle bad debt on a returned record" });
             const {ISBN, outstandingQty, isBadDebt}= record;
             if (isBadDebt){
                 await Book.findOneAndUpdate(
@@ -90,25 +91,21 @@ class BorrowRecordController {
             }
             record.isBadDebt=!record.isBadDebt;
             await BorrowRecord.findByIdAndUpdate(req.params.id,  { isBadDebt: !isBadDebt });
-        }catch (err) {console.log(err)}
+        }catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal server error in BorrowRecordController.toggleBadDebt" });
+        }
     }
 
     //toggleReturned
-    static async toggleReturned(req: Request, res: Response) {
+    static async handleReturn(req: Request, res: Response) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record) return res.status(404).json({ message: "Record not found" });
             const {ISBN, outstandingQty, isReturned, isBadDebt}= record;
             if(isBadDebt) return res.status(400).json({ message: "Bad debt record cannot be returned" });
             if (isReturned){
-                await Book.findOneAndUpdate(
-                    { ISBN: ISBN },
-                    {
-                        $inc: {
-                            borrowedBooksCount: outstandingQty
-                        }
-                    },
-                );
+               return res.status(400).json({ message: "You can't toggle return on a returned record" });
             }else {
                 await Book.findOneAndUpdate(
                     { ISBN: ISBN },
@@ -120,9 +117,14 @@ class BorrowRecordController {
                 )
             }
             record.isBadDebt=!record.isBadDebt;
-            console.log("isReturned: "+isReturned)
+
             await BorrowRecord.findByIdAndUpdate(req.params.id, { isReturned: !isReturned, returnDate: new Date(),outstandingQty: 0});
-        }catch (err) {console.log(err)}
+
+            return res.json({ message: "Book returned successfully" });
+        }catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal server error in BorrowRecordController.handleReturn" });
+        }
     }
 
     // update borrow record
@@ -132,39 +134,32 @@ class BorrowRecordController {
             console.log("borrow controller=> originalRecord:"+originalRecord);
             if(!originalRecord) return res.status(404).json({ message: "Record not found" });
 
-            const { ISBN, outstandingQty, borrowerName, borrowDate, returnDate, isBadDebt, notes } = req.body;
+            const { ISBN, outstandingQty, isReturned, borrowerName, borrowDate, returnDate, isBadDebt, notes } = req.body;
             const book:IBook | null = await Book.findOne({ ISBN: originalRecord.ISBN });
-            if (!book) return res.status(404).json({ message: "Book not found" });
-
-
-            //console.log("book:"+book);
-
+            if (!book) return res.status(404).json({ message: "Book not found..." });
 
             //adjust book object
             //bad debt
-            if(!originalRecord.isBadDebt && isBadDebt){
-                console.log("suffered a bad debt");
-                book.qtyOwned -= outstandingQty; //拥有量 - qty
-                book.borrowedBooksCount-=originalRecord.outstandingQty;//借出量 - qty
-            }
-            //bad debt return
-            else if(originalRecord.isBadDebt && !isBadDebt){
-                book.qtyOwned += outstandingQty;
-                book.borrowedBooksCount+=originalRecord.outstandingQty;
-            }else {   // book returned
-                console.log("originalRecord.qty - qty: "+ (originalRecord.outstandingQty - outstandingQty));
-                // book.qtyOwned += (originalRecord.qty - qty);
-                book.borrowedBooksCount -= (originalRecord.outstandingQty - outstandingQty);
+            if((originalRecord.isBadDebt === true && isBadDebt === false) || (originalRecord.isBadDebt === false && isBadDebt === true) ){
+                return res.status(400).json({ message: "Cannot toggle bad debt status here..." });
             }
 
-            console.log("req.params.id: ", req.params.id)
-            console.log("req.body:"+req.body);
-            console.log("book:"+book);
-            //normal return
-            await Book.findOneAndUpdate({ISBN: originalRecord.ISBN}, {qtyOwned: book.qtyOwned, borrowedBooksCount: book.borrowedBooksCount}, {new: true});
+            if((originalRecord.isReturned === true && isReturned === false) || (originalRecord.isReturned === false && isReturned === true) ){
+                return res.status(400).json({ message: "Cannot toggle return status here..." });
+            }
+
+            if(originalRecord.ISBN !== ISBN){
+                return res.status(400).json({ message: "Cannot change ISBN here..." });
+            }
+
+            book.borrowedBooksCount -= (originalRecord.outstandingQty - outstandingQty);
+
+            //update book
+            await Book.findOneAndUpdate({ISBN: originalRecord.ISBN}, {borrowedBooksCount: book.borrowedBooksCount});
             //update BorrowRecord
             console.log("print after book.save() ")
 
+            //update BorrowRecord
             await BorrowRecord.findByIdAndUpdate(req.params.id, req.body);
 
             res.json({message: "Record updated"});

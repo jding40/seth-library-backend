@@ -26,9 +26,9 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: "Successfully registered" });
+    return res.status(201).json({ message: "Successfully registered" });
   } catch (error) {
-    res.status(500).json({ message: "Registration failed...", error });
+    return res.status(500).json({ message: "Registration failed...", error });
   }
 };
 
@@ -57,9 +57,9 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: "168h" }
     );
 
-    res.json({ message: "Successfully login", token });
+    return res.json({ message: "Successfully login", token });
   } catch (error) {
-    res.status(500).json({ message: "Failed to login...", error });
+    return res.status(500).json({ message: "Failed to login...", error });
   }
 };
 
@@ -67,9 +67,9 @@ export const loginUser = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: AuthRequest, res: Response) => {
   try {
     const users = await User.find().select("-password");
-    res.json(users);
+    return res.json(users);
   } catch (error) {
-    res.status(500).json({ message: "Failed to get user", error });
+    return res.status(500).json({ message: "Failed to get user", error });
   }
 };
 
@@ -87,9 +87,9 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
     const user = await User.findByIdAndUpdate(id, updates, { new: true });
     if (!user) return res.status(404).json({ message: "User not found..." });
 
-    res.json(user);
+    return res.json(user);
   } catch (error) {
-    res.status(500).json({ message: "Update failed", error });
+    return res.status(500).json({ message: "Update failed", error });
   }
 };
 
@@ -101,9 +101,9 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
     const user = await User.findByIdAndDelete(id);
     if (!user) return res.status(404).json({ message: "User not found..." });
 
-    res.json({ message: "Deletion failed..." });
+    return res.json({ message: "Deletion failed..." });
   } catch (error) {
-    res.status(500).json({ message: "Deletion failed...", error });
+    return res.status(500).json({ message: "Deletion failed...", error });
   }
 };
 
@@ -127,10 +127,10 @@ export const switchRole = async (req: AuthRequest, res: Response) => {
     // save
     await user.save();
 
-    res.json({ message: "Role switched successfully", user });
+    return res.json({ message: "Role switched successfully", user });
   } catch (error) {
     console.error("❌ switchRole failed:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

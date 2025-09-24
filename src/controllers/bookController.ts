@@ -8,10 +8,10 @@ export const getBooks= async (req: Request, res: Response) => {
   try {
     const books:IBook[]  = await Book.find();
     console.log("bookController.getBooks => books:"+books);
-    res.json(books);
+    return res.json(books);
   } catch (error) {
     console.log("error in bookController.getBooks: "+error);
-    res.status(500).json({ message: "Failed to get books", error });
+    return res.status(500).json({ message: "Failed to get books", error });
   }
 };
 
@@ -22,9 +22,9 @@ export const getBookByIsbn = async(req: Request, res: Response) => {
   try{
     const { isbn } = req.params;
     const book:IBook|null  = await Book.findOne({ISBN:isbn});
-    res.status(201).json(book);
+    return res.status(201).json(book);
   }catch (error) {
-    res.status(400).json({ message: "Failed to add the book", error });
+    return res.status(400).json({ message: "Failed to add the book", error });
   }
 }
 
@@ -37,9 +37,9 @@ export const createBook = async (req: Request, res: Response) => {
     //TODO only allow designated fields
 
     await book.save();
-    res.status(201).json(book);
+    return res.status(201).json(book);
   } catch (error) {
-    res.status(400).json({ message: "Failed to add the book", error });
+    return res.status(400).json({ message: "Failed to add the book", error });
   }
 };
 
@@ -57,9 +57,9 @@ export const updateBook = async (req: Request, res: Response) => {
       { new: true }
     );
     if (!book) return res.status(404).json({ message: "Book not found" });
-    res.json(book);
+    return res.json(book);
   } catch (error) {
-    res.status(400).json({ message: "Update failed", error });
+    return res.status(400).json({ message: "Update failed", error });
   }
 };
 
@@ -73,8 +73,8 @@ export const deleteBook = async (req: Request, res: Response) => {
     if(book.borrowedBooksCount!==0) return res.status(400).json({ message: "Book has borrowed records" });
     await book.deleteOne();
      //await Book.findOneAndDelete( { ISBN: isbn },);
-    res.json({ message: "Delete successfully" });
+    return res.json({ message: "Delete successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Deletion failed", error });
+    return res.status(500).json({ message: "Deletion failed", error });
   }
 };

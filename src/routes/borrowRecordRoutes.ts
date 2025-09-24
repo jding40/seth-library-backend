@@ -9,7 +9,7 @@ const borrowRecordRouter = express.Router();
 borrowRecordRouter.get("/", authenticate, authorize(["admin", "owner"]), BorrowRecordController.getAll);
 borrowRecordRouter.get("/:id", authenticate, authorize(["admin", "owner"]), BorrowRecordController.getById);
 borrowRecordRouter.get("/toggle-bad-debt/:id", authenticate, authorize(["admin", "owner"]), BorrowRecordController.toggleBadDebt);
-borrowRecordRouter.get("/toggle-returned/:id", authenticate, authorize(["admin", "owner"]), BorrowRecordController.toggleReturned);
+borrowRecordRouter.get("/toggle-returned/:id", authenticate, authorize(["admin", "owner"]), BorrowRecordController.handleReturn);
 
 
 // 🔒 management(user role must be admin)

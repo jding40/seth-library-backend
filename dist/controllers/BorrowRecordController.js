@@ -58,6 +58,8 @@ class BorrowRecordController {
             const record = await BorrowRecord.findById(req.params.id);
             if (!record)
                 return res.status(404).json({ message: "Record not found" });
+            if (record.isReturned)
+                return res.status(404).json({ message: "You can't toggle bad debt on a returned record" });
             const { ISBN, outstandingQty, isBadDebt } = record;
             if (isBadDebt) {
                 await Book.findOneAndUpdate({ ISBN: ISBN }, {
@@ -120,35 +122,27 @@ class BorrowRecordController {
             console.log("borrow controller=> originalRecord:" + originalRecord);
             if (!originalRecord)
                 return res.status(404).json({ message: "Record not found" });
-            const { ISBN, outstandingQty, borrowerName, borrowDate, returnDate, isBadDebt, notes } = req.body;
+            const { ISBN, outstandingQty, isReturned, borrowerName, borrowDate, returnDate, isBadDebt, notes } = req.body;
             const book = await Book.findOne({ ISBN: originalRecord.ISBN });
             if (!book)
-                return res.status(404).json({ message: "Book not found" });
-            //console.log("book:"+book);
+                return res.status(404).json({ message: "Book not found..." });
             //adjust book object
             //bad debt
-            if (!originalRecord.isBadDebt && isBadDebt) {
-                console.log("suffered a bad debt");
-                book.qtyOwned -= outstandingQty; //拥有量 - qty
-                book.borrowedBooksCount -= originalRecord.outstandingQty; //借出量 - qty
+            if ((originalRecord.isBadDebt === true && isBadDebt === false) || (originalRecord.isBadDebt === false && isBadDebt === true)) {
+                return res.status(400).json({ message: "Cannot toggle bad debt status here..." });
             }
-            //bad debt return
-            else if (originalRecord.isBadDebt && !isBadDebt) {
-                book.qtyOwned += outstandingQty;
-                book.borrowedBooksCount += originalRecord.outstandingQty;
+            if ((originalRecord.isReturned === true && isReturned === false) || (originalRecord.isReturned === false && isReturned === true)) {
+                return res.status(400).json({ message: "Cannot toggle return status here..." });
             }
-            else { // book returned
-                console.log("originalRecord.qty - qty: " + (originalRecord.outstandingQty - outstandingQty));
-                // book.qtyOwned += (originalRecord.qty - qty);
-                book.borrowedBooksCount -= (originalRecord.outstandingQty - outstandingQty);
+            if (originalRecord.ISBN !== ISBN) {
+                return res.status(400).json({ message: "Cannot change ISBN here..." });
             }
-            console.log("req.params.id: ", req.params.id);
-            console.log("req.body:" + req.body);
-            console.log("book:" + book);
-            //normal return
-            await Book.findOneAndUpdate({ ISBN: originalRecord.ISBN }, { qtyOwned: book.qtyOwned, borrowedBooksCount: book.borrowedBooksCount }, { new: true });
+            book.borrowedBooksCount -= (originalRecord.outstandingQty - outstandingQty);
+            //update book
+            await Book.findOneAndUpdate({ ISBN: originalRecord.ISBN }, { borrowedBooksCount: book.borrowedBooksCount });
             //update BorrowRecord
             console.log("print after book.save() ");
+            //update BorrowRecord
             await BorrowRecord.findByIdAndUpdate(req.params.id, req.body);
             res.json({ message: "Record updated" });
         }
