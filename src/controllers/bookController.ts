@@ -57,7 +57,7 @@ export const updateBook = async (req: Request, res: Response) => {
       { new: true }
     );
     if (!book) return res.status(404).json({ message: "Book not found" });
-    if(req.body?.qtyOwned>0 && ! book.isWishList) {book = await Book.findOneAndUpdate(
+    if(req.body?.qtyOwned>0 && book.isWishList) {book = await Book.findOneAndUpdate(
         {ISBN: ISBN},
         {isWishList: false},
         {new: true}
