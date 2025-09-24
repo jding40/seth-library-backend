@@ -6,11 +6,11 @@ export const authenticate = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            //console.log("authheader in authenticate: "+authHeader);
+            console.log("authheader in authenticate: " + authHeader);
             return res.status(401).json({ message: "No token provided" });
         }
         const token = authHeader.split(" ")[1];
-        //console.log("token in authenticate: "+token);
+        console.log("token in authenticate: " + token);
         if (!token) {
             return res.status(401).json({ message: "No token provided" });
         }
@@ -19,7 +19,8 @@ export const authenticate = async (req, res, next) => {
         if (!decoded || typeof decoded.id !== "string") {
             return res.status(401).json({ message: "Invalid token format" });
         }
-        console.log("decoded in authenticate: " + decoded);
+        //console.log("decoded in authenticate: "+decoded);//decoded in authenticate: [object Object]
+        console.log("decoded in authenticate: " + JSON.stringify(decoded));
         // query user by id
         const user = await User.findById(decoded.id);
         if (!user) {

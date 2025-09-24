@@ -20,10 +20,10 @@ export const registerUser = async (req, res) => {
             tel,
         });
         await newUser.save();
-        res.status(201).json({ message: "Successfully registered" });
+        return res.status(201).json({ message: "Successfully registered" });
     }
     catch (error) {
-        res.status(500).json({ message: "Registration failed...", error });
+        return res.status(500).json({ message: "Registration failed...", error });
     }
 };
 // User login
@@ -43,20 +43,20 @@ export const loginUser = async (req, res) => {
         if (!secret)
             throw new Error("secret is null");
         const token = jwt.sign({ id: user._id, role: user.role, email: user.email }, secret, { expiresIn: "168h" });
-        res.json({ message: "Successfully login", token });
+        return res.json({ message: "Successfully login", token });
     }
     catch (error) {
-        res.status(500).json({ message: "Failed to login...", error });
+        return res.status(500).json({ message: "Failed to login...", error });
     }
 };
 // Get information of all users(need authorization)
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find().select("-password");
-        res.json(users);
+        return res.json(users);
     }
     catch (error) {
-        res.status(500).json({ message: "Failed to get user", error });
+        return res.status(500).json({ message: "Failed to get user", error });
     }
 };
 // Update user(need authorization)
@@ -71,10 +71,10 @@ export const updateUser = async (req, res) => {
         const user = await User.findByIdAndUpdate(id, updates, { new: true });
         if (!user)
             return res.status(404).json({ message: "User not found..." });
-        res.json(user);
+        return res.json(user);
     }
     catch (error) {
-        res.status(500).json({ message: "Update failed", error });
+        return res.status(500).json({ message: "Update failed", error });
     }
 };
 // delete user(need authorization)
@@ -84,10 +84,10 @@ export const deleteUser = async (req, res) => {
         const user = await User.findByIdAndDelete(id);
         if (!user)
             return res.status(404).json({ message: "User not found..." });
-        res.json({ message: "Deletion failed..." });
+        return res.json({ message: "Deletion failed..." });
     }
     catch (error) {
-        res.status(500).json({ message: "Deletion failed...", error });
+        return res.status(500).json({ message: "Deletion failed...", error });
     }
 };
 export const switchRole = async (req, res) => {
@@ -105,11 +105,11 @@ export const switchRole = async (req, res) => {
         console.log("new role: ", newRole);
         // save
         await user.save();
-        res.json({ message: "Role switched successfully", user });
+        return res.json({ message: "Role switched successfully", user });
     }
     catch (error) {
         console.error("❌ switchRole failed:", error);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 //# sourceMappingURL=userController.js.map

@@ -118,7 +118,7 @@ class BorrowRecordController {
             }
             record.isBadDebt=!record.isBadDebt;
 
-            await BorrowRecord.findByIdAndUpdate(req.params.id, { isReturned: !isReturned, returnDate: new Date(),outstandingQty: 0});
+            await BorrowRecord.findByIdAndUpdate(req.params.id, { isReturned: true, returnDate: new Date(),outstandingQty: 0});
 
             return res.json({ message: "Book returned successfully" });
         }catch (err) {
@@ -126,6 +126,8 @@ class BorrowRecordController {
             return res.status(500).json({ message: "Internal server error in BorrowRecordController.handleReturn" });
         }
     }
+
+
 
     // update borrow record
     static async update(req: Request, res: Response) {
@@ -183,6 +185,9 @@ class BorrowRecordController {
 
             if(!record.isReturned && !record.isBadDebt) {
                 return res.status(400).json({ message: "Cannot delete a unreturned record" });
+            }
+            if(record.outstandingQty > 0){
+                return res.status(400).json({ message: "Cannot delete a record with outstanding quantity" });
             }
 
             await BorrowRecord.deleteOne({_id: req.params.id});
