@@ -89,11 +89,11 @@ export const deleteBook = async (req: Request, res: Response) => {
 
 export const updateShelf = async(req: Request, res: Response) => {
   const { isbn} = req.params;
-  const { newShelf } = req.body;
+  const { shelfLocation } = req.body;
   try{
     const book = await Book.findOneAndUpdate(
       { ISBN: isbn},
-      { $set: { shelfLocation: newShelf } },
+      { $set: { shelfLocation } },
       { new: true }
     );
     if (!book) return res.status(404).json({ message: "Book not found" });
