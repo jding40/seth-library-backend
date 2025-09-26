@@ -14,7 +14,7 @@ const bookSchema = new Schema({
     language: { type: String, required: false },
     pdfTokenLink: { type: String, required: false },
     webReaderLink: { type: String, required: false },
-    shelfLocation: { type: [String], required: false, default: [] },
+    shelfLocation: { type: [String], required: true, default: [] },
     isRecommended: { type: Boolean, required: false, default: false },
     isWishList: { type: Boolean, required: false, default: false },
     notes: { type: String, required: false },

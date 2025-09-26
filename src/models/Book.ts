@@ -15,7 +15,7 @@ export interface IBook extends Document {
   language?: string;
   pdfTokenLink?: string;
   webReaderLink?: string;
-  shelfLocation?: string[];
+  shelfLocation: string[];
   isRecommended?: boolean;
   isWishList?: boolean;
   notes?: string;
@@ -37,7 +37,7 @@ const bookSchema = new Schema<IBook>(
     language: { type: String, required: false },
     pdfTokenLink: { type: String, required: false },
     webReaderLink: { type: String, required: false },
-    shelfLocation: { type: [String], required: false, default:[] },
+    shelfLocation: { type: [String], required: true, default:[] },
     isRecommended: { type: Boolean, required: false, default: false },
     isWishList: { type: Boolean, required: false, default: false },
     notes: { type: String, required: false },
