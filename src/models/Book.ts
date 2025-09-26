@@ -37,7 +37,7 @@ const bookSchema = new Schema<IBook>(
     language: { type: String, required: false },
     pdfTokenLink: { type: String, required: false },
     webReaderLink: { type: String, required: false },
-    shelfLocation: { type: [String], required: false },
+    shelfLocation: { type: [String], required: false, default:[] },
     isRecommended: { type: Boolean, required: false, default: false },
     isWishList: { type: Boolean, required: false, default: false },
     notes: { type: String, required: false },
