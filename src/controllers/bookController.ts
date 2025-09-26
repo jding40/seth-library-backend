@@ -63,6 +63,7 @@ export const updateBook = async (req: Request, res: Response) => {
         {new: true}
       )
     }
+    console.log("bookController.updateBook.book:", book);
 
     return res.json(book);
   } catch (error) {
@@ -85,3 +86,19 @@ export const deleteBook = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Deletion failed", error });
   }
 };
+
+export const updateShelf = async(req: Request, res: Response) => {
+  const { isbn} = req.params;
+  const { newShelf } = req.body;
+  try{
+    const book = await Book.findOneAndUpdate(
+      { ISBN: isbn},
+      { $set: { shelfLocation: newShelf } },
+      { new: true }
+    );
+    if (!book) return res.status(404).json({ message: "Book not found" });
+    return res.json(book);
+  }catch (error) {
+    return res.status(400).json({ message: "Failed to remove the book", error });
+  }
+}
