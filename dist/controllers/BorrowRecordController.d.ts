@@ -6,7 +6,7 @@ declare class BorrowRecordController {
     static toggleBadDebt(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     static handleReturn(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     static update(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    static delete(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    static delete(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
 }
 export default BorrowRecordController;
 //# sourceMappingURL=BorrowRecordController.d.ts.map

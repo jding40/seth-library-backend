@@ -152,6 +152,7 @@ class BorrowRecordController {
     static async delete(req, res) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
+            console.log("record: " + record);
             if (!record)
                 return res.status(404).json({ message: "Record not found" });
             // Restore stock quantity
@@ -160,14 +161,11 @@ class BorrowRecordController {
             if (!record.isReturned && !record.isBadDebt) {
                 return res.status(400).json({ message: "Cannot delete a unreturned record" });
             }
-            if (record.outstandingQty > 0) {
-                return res.status(400).json({ message: "Cannot delete a record with outstanding quantity" });
-            }
             await BorrowRecord.deleteOne({ _id: req.params.id });
-            res.json({ message: "Record deleted..." });
+            return res.json({ message: "Record deleted..." });
         }
         catch (err) {
-            res.status(500).json({ message: "Failed to delete record" });
+            return res.status(500).json({ message: "Failed to delete record" });
         }
     }
 }
