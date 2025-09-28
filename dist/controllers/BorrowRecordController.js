@@ -152,7 +152,6 @@ class BorrowRecordController {
     static async delete(req, res) {
         try {
             const record = await BorrowRecord.findById(req.params.id);
-            console.log("record: " + record);
             if (!record)
                 return res.status(404).json({ message: "Record not found" });
             // Restore stock quantity
