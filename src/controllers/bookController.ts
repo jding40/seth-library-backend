@@ -32,7 +32,7 @@ export const getBookByIsbn = async(req: Request, res: Response) => {
 export const createBook = async (req: Request, res: Response) => {
   try {
     const book = new Book(req.body);
-    console.log("bookController.createBook.book:", book);
+    // console.log("bookController.createBook.book:", book);
 
     //TODO only allow designated fields
 
