@@ -38,6 +38,9 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# md file
+readme2.md
+
 # Optional: lockfiles（如果你不想提交 package-lock.json/yarn.lock/pnpm-lock.yaml）
 # package-lock.json
 # yarn.lock

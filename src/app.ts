@@ -3,11 +3,12 @@ import cors from "cors";
 import bookRouter from "./routes/bookRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import borrowRecordRouter from "./routes/borrowRecordRoutes.js";
-import express, { type Request, type Response } from "express";
+import express, { type Request, type Response, type Express } from "express";
+import SideJobController  from "./controllers/SideJobController.js";
 
 import dotenv from "dotenv";
 
-const app = express();
+const app:Express = express();
 dotenv.config();
 
 // middleware
@@ -19,7 +20,9 @@ app.use("/api/books", bookRouter);
 app.use("/api/user", userRouter);
 app.use("/api/borrow-record", borrowRecordRouter);
 
-app.get("/", (req, res) => res.json({ designer: "Jianzhong Ding" }));
+app.get("/", (req, res) => res.json({ "designer": "Jianzhong Ding" }));
+
+app.post('/api/save-bom-parse-record', SideJobController.saveBomParseRecord )
 
 app.get("/api/test", (req: Request, res: Response) => {
   console.log(process.env.PORT);

@@ -27,7 +27,7 @@ export const getBookByIsbn = async (req, res) => {
 export const createBook = async (req, res) => {
     try {
         const book = new Book(req.body);
-        console.log("bookController.createBook.book:", book);
+        // console.log("bookController.createBook.book:", book);
         //TODO only allow designated fields
         await book.save();
         return res.status(201).json(book);

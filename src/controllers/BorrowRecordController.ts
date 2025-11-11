@@ -3,7 +3,6 @@ import Book from "../models/Book.js";
 import type { IBook } from "../models/Book.js";
 import type { Request, Response } from 'express';
 
-
 class BorrowRecordController {
     // get all borrow records
     static async getAll(req: Request, res: Response) {
